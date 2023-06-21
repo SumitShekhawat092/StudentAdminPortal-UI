@@ -16,7 +16,7 @@ export class StudentsComponent implements OnInit {
   // student array
   students:Student[] = [];
   //display columns that we want to show
-  displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth','email','mobile','gender'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth','email','mobile','gender','edit'];
   //create variable as Data Source and assign memory of Student
   dataSource: MatTableDataSource<Student> = new MatTableDataSource<Student>();
   //initiaze matpaginator under viewchild 
@@ -28,7 +28,7 @@ export class StudentsComponent implements OnInit {
 
   ngOnInit(): void {
     //fatch students
-    this.studentService.getStudent()
+    this.studentService.getStudents()
     .subscribe(
       (successResponse) => {
         this.students = successResponse;
