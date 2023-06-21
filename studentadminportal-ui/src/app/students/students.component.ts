@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { StudentService } from './student.service';
+import { Student } from '../models/ui-models/student.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-students',
@@ -8,6 +12,18 @@ import { StudentService } from './student.service';
 })
 export class StudentsComponent implements OnInit {
 
+  /// initialize variables
+  // student array
+  students:Student[] = [];
+  //display columns that we want to show
+  displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth','email','mobile','gender'];
+  //create variable as Data Source and assign memory of Student
+  dataSource: MatTableDataSource<Student> = new MatTableDataSource<Student>();
+  //initiaze matpaginator under viewchild 
+  @ViewChild(MatPaginator) matPaginator!: MatPaginator;
+  @ViewChild(MatSort) matSort!: MatSort;
+  filterString = '';
+
   constructor(private studentService: StudentService) { }
 
   ngOnInit(): void {
@@ -15,12 +31,23 @@ export class StudentsComponent implements OnInit {
     this.studentService.getStudent()
     .subscribe(
       (successResponse) => {
-        console.log(successResponse)
+        this.students = successResponse;
+        this.dataSource = new MatTableDataSource<Student>(this.students);
+        if(this.matPaginator){
+          this.dataSource.paginator = this.matPaginator;
+        }
+        if(this.matSort){
+          this.dataSource.sort = this.matSort;
+        }
       },
       (errorResponse) => {
         console.log(errorResponse)
       }
     );
+  }
+
+  filterStudents(){
+    this.dataSource.filter = this.filterString.trim().toLowerCase();
   }
 
 }
