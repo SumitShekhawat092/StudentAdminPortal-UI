@@ -35,6 +35,7 @@ export class ViewStudentComponent implements OnInit {
   };
   isNewStudent = false;
   header = '';
+  displayProgileImageUrl = '';
 
   genderList: Gender[] = [];
   constructor(private readonly studentService: StudentService
@@ -54,6 +55,7 @@ export class ViewStudentComponent implements OnInit {
           if(this.studentId.toLowerCase() === 'Add'.toLowerCase()){
             this.isNewStudent = true;
             this.header = 'Add New Student';
+            this.setImage();
           }
           else{
             this.isNewStudent = false;
@@ -62,6 +64,10 @@ export class ViewStudentComponent implements OnInit {
           .subscribe(
             (successResponse) => {
               this.student = successResponse;
+              this.setImage();
+            },
+            (error) => {
+              this.setImage();
             }
           );
           }
@@ -132,6 +138,36 @@ export class ViewStudentComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  uploadImage(event:any):void{
+    if(this.studentId){
+      const file: File = event.target.files[0];
+      this.studentService.uploadImage(this.student.id,file)
+      .subscribe(
+        (success) => {
+          this.student.profileImageUrl = success;
+          this.setImage();
+
+          //show a notification
+          this.snackbar.open('Profile Image Updated',undefined,{
+            duration:2000
+          });
+        },
+        (error) => {}
+        )
+    }
+  }
+  
+  private setImage():void{
+    if(this.student.profileImageUrl){
+      //fatch the image by URL
+      this.displayProgileImageUrl = this.studentService.getImagePath(this.student.profileImageUrl);
+    }
+    else{
+      //display a default image.
+      this.displayProgileImageUrl = "/assets/user.jpg"
+    }
   }
 
 }

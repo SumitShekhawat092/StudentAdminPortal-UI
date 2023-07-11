@@ -99,6 +99,17 @@
         </div>
         <div class="col-xs-6">
             <!--Image Here-->
+            <div class="row center-xs">
+                <div class="image-container">
+                    <img [src]="displayProgileImageUrl" alt="Profile Image">
+                </div>
+            </div>
+            <div class="row" *ngIf="!isNewStudent">
+                <div class="col-xs-12 row center-xs mt-1">
+                    <input hidden type="file" #imageUpload (change)="uploadImage($event)">
+                    <button mat-raised-button color="primary" (click)="imageUpload.click()">Change Image</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
